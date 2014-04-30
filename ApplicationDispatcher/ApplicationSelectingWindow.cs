@@ -10,7 +10,7 @@ using System.Windows.Input;
 
 namespace KSPE3Lib
 {
-    internal class ProjectSelectingWindow : Window
+    internal class ApplicationSelectingWindow : Window
     {
         private int undefinedSelectionIndex = -1;
         private int selectedIndex;
@@ -25,7 +25,7 @@ namespace KSPE3Lib
         private Thickness borderThickness = new Thickness(0.5);
         private CornerRadius borderCornerRadius = new CornerRadius(5);
         
-        public ProjectSelectingWindow(IEnumerable<string> projects, Action<int> passSelectedIndex)
+        public ApplicationSelectingWindow(IEnumerable<string> projects, Action<int> passSelectedIndex)
         {
             selectedIndex = undefinedSelectionIndex;
             this.passSelectedIndex = passSelectedIndex;

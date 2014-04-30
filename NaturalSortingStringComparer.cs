@@ -23,13 +23,13 @@ namespace KSPE3Lib
             int aLength = a.Length;
             int bLength = b.Length;
             int minLength = Math.Min(aLength, bLength);
-            int index = 0;
+            int index = -1;
             for (int i = 0; i < minLength; i++)
                 if ((a[i].Equals(b[i])))
                     index = i;
                 else
                     break;
-            if (index > 0)
+            if (index >= 0)
                 if (index == (minLength - 1))
                     return aLength - bLength;
                 else

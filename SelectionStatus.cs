@@ -6,5 +6,5 @@ using System.Threading.Tasks;
 
 namespace KSPE3Lib
 {
-    public enum Status { None, NoSelected, Selected, Error }
+    public enum SelectionStatus { None, NoSelected, Selected }
 }

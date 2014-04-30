@@ -32,6 +32,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>Sample.ico</ApplicationIcon>
@@ -46,6 +47,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -60,6 +62,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AbscissaDirection.cs" />
+    <Compile Include="ColorPicker.cs" />
+    <Compile Include="Interface\Connection.cs" />
+    <Compile Include="Interface\Signal.cs" />
+    <Compile Include="Interface\Symbol.cs" />
+    <Compile Include="SelectedColorChangedEventArgs.cs" />
+    <Compile Include="E3ColorTable.cs" />
+    <Compile Include="FontSettingsWindow.cs" />
     <Compile Include="OrdinateDirection.cs" />
     <Compile Include="Font\E3Font.cs" />
     <Compile Include="Font\Alignment.cs" />
@@ -67,7 +76,7 @@
     <Compile Include="Font\Styles.cs" />
     <Compile Include="HeaderText.cs" />
     <Compile Include="Interface\Devices\NormalDevice.cs" />
-    <Compile Include="Interface\E3Objects.cs" />
+    <Compile Include="Interface\E3ObjectFabric.cs" />
     <Compile Include="Interface\Graphic.cs" />
     <Compile Include="Interface\Group.cs" />
     <Compile Include="Interface\Pins, Cores And Wires\Core.cs" />
@@ -76,15 +85,16 @@
     <Compile Include="Interface\Pins, Cores And Wires\DevicePin.cs" />
     <Compile Include="Interface\Pins, Cores And Wires\WireCore.cs" />
     <Compile Include="Interface\Devices\Device.cs" />
-    <Compile Include="Interface\Project.cs" />
+    <Compile Include="Interface\E3Project.cs" />
     <Compile Include="Interface\Pins, Cores And Wires\Pin.cs" />
     <Compile Include="Interface\Sheet.cs" />
     <Compile Include="Interface\Position.cs" />
-    <Compile Include="Interface\Text.cs" />
+    <Compile Include="Interface\E3Text.cs" />
     <Compile Include="LineTemplate.cs" />
-    <Compile Include="Status.cs" />
-    <Compile Include="ProjectDispatcher\ProjectDispatcher.cs" />
-    <Compile Include="ProjectDispatcher\ProjectSelectingWindow.cs" />
+    <Compile Include="ApplicationDispatcher\E3ApplicationInfo.cs" />
+    <Compile Include="SelectionStatus.cs" />
+    <Compile Include="ApplicationDispatcher\ApplicationDispatcher.cs" />
+    <Compile Include="ApplicationDispatcher\ApplicationSelectingWindow.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -115,7 +125,12 @@
   <ItemGroup>
     <Resource Include="Sample.ico" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Page Include="Resources.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

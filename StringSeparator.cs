@@ -12,7 +12,7 @@ namespace KSPE3Lib
         private Func<string, E3Font, double> determineStringLength;
         private E3Font font;
 
-        public StringSeparator(char[] separators, E3Font font, Text text)
+        public StringSeparator(char[] separators, E3Font font, E3Text text)
         {
             this.separators = separators;
             this.font = font;

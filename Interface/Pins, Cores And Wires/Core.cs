@@ -7,9 +7,9 @@ using e3;
 
 namespace KSPE3Lib
 {
-    public abstract class Core : Pin
+    public class Core : Pin
     {
-        public int FirstEndPinId
+        public int StartPinId
         {
             get
             {
@@ -17,7 +17,7 @@ namespace KSPE3Lib
             }
         }
 
-        public int SecondEndPinId
+        public int EndPinId
         {
             get
             {
@@ -25,8 +25,8 @@ namespace KSPE3Lib
             }
         }
 
-        protected Core(int id, E3Objects e3Objects)
-            : base(id, e3Objects)
+        internal Core(int id, E3ObjectFabric e3ObjectFabric)
+            : base(id, e3ObjectFabric)
         {
         }
     }

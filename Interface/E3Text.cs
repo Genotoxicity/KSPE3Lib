@@ -7,9 +7,8 @@ using e3;
 
 namespace KSPE3Lib
 {
-    public class Text
+    public class E3Text
     {
-        //private E3Objects e3Objects;
         private e3Text text;
 
         public int Id
@@ -24,10 +23,9 @@ namespace KSPE3Lib
             }
         }
 
-        internal Text(int id, E3Objects e3Objects)
+        internal E3Text(int id, E3ObjectFabric e3ObjectFabric)
         {
-            //this.e3Objects = e3Objects;
-            text = e3Objects.GetText(id);
+            text = e3ObjectFabric.GetText(id);
         }
 
         public void SetFont (E3Font font)

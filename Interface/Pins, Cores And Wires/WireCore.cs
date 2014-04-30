@@ -20,10 +20,9 @@ namespace KSPE3Lib
             }
         }
 
-        internal WireCore(int id, E3Objects e3Objects)
-            : base(id, e3Objects)
+        internal WireCore(int id, E3ObjectFabric e3ObjectFabric)
+            : base(id, e3ObjectFabric)
         {
         }
-
     }
 }

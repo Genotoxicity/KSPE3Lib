@@ -9,16 +9,23 @@ namespace KSPE3Lib
 {
     public class Graphic
     {
-        private E3Objects e3Objects;
         private e3Graph graph;
 
-        public int Id { get; private set; }
-
-        internal Graphic(int id, E3Objects e3Objects)
+        public int Id
         {
-            Id = id;
-            this.e3Objects = e3Objects;
-            graph = e3Objects.GetGraph(id);
+            get
+            {
+                return graph.GetId();
+            }
+            set
+            {
+                graph.SetId(value);
+            }
+        }
+
+        internal Graphic(int id, E3ObjectFabric e3ObjectFabric)
+        {
+            graph = e3ObjectFabric.GetGraph(id);
         }
 
         public int CreateText(int sheetId, string value, double x, double y)

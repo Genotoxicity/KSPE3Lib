@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace KSPE3Lib
 {
+    [Serializable]
     public class E3Font
     {
         private int colorIndex;

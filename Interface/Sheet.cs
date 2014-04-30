@@ -9,12 +9,22 @@ namespace KSPE3Lib
 {
     public class Sheet
     {
-        //private E3Objects e3Objects;
         private e3Sheet sheet;
         private OrdinateDirection ordinateDirection;
         private AbscissaDirection abscissaDirection;
 
-        public int Id { get; private set; }
+        public int Id
+        {
+            get
+            {
+                return sheet.GetId();
+            }
+            set
+            {
+                sheet.SetId(value);
+                SetAxesDirections();
+            }
+        }   
 
         public string Name
         {
@@ -29,11 +39,9 @@ namespace KSPE3Lib
             }
         }
 
-        internal Sheet(int id, E3Objects e3Objects)
+        internal Sheet(int id, E3ObjectFabric e3ObjectFabric)
         {
-            //this.e3Objects = e3Objects;
-            Id = id;
-            sheet = e3Objects.GetSheet(id);
+            sheet = e3ObjectFabric.GetSheet(id);
             SetAxesDirections();
         }
 
@@ -57,6 +65,18 @@ namespace KSPE3Lib
         public void SetAttribute(string attribute, string value)
         {
             sheet.SetAttributeValue(attribute, value);
+        }
+
+        public bool IsTypeOf(int sheetTypeCode)
+        {
+            dynamic sheetTypes = default(dynamic);
+            int sheetTypeCount = sheet.GetSchematicTypes(ref sheetTypes);
+            if (sheetTypeCount == 0)
+                return false;
+            for (int i = 1; i <= sheetTypeCount; i++)
+                if (sheetTypes[i] == sheetTypeCode)
+                    return true;
+            return false;
         }
 
         public double MoveDown(double from, double offset)

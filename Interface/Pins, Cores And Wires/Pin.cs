@@ -9,15 +9,18 @@ namespace KSPE3Lib
 {
     public abstract class Pin
     {
-        //protected E3Objects e3Objects;
-        protected int id;
+        protected E3ObjectFabric e3ObjectFabric;
         protected e3Pin pin;
 
-        public int Id
+        public virtual int Id
         {
             get
             {
-                return id;
+                return pin.GetId();
+            }
+            set
+            {
+                pin.SetId(value);
             }
         }
 
@@ -46,11 +49,10 @@ namespace KSPE3Lib
 
         }
 
-        protected Pin(int id, E3Objects e3Objects)
+        protected Pin(int id, E3ObjectFabric e3ObjectFabric)
         {
-            //this.e3Objects = e3Objects;
-            this.id = id;
-            pin = e3Objects.GetPin(id);
+            this.e3ObjectFabric = e3ObjectFabric;
+            pin = e3ObjectFabric.GetPin(id);
         }
     }
 }

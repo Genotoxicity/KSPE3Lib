@@ -14,9 +14,9 @@ namespace KSPE3Lib
         private LineTemplate lineTemplate;
         private StringSeparator separator;
         private List<string> headerLineTexts;
-        private Project project;
+        private E3Project project;
         private Graphic graphic;
-        private Text text;
+        private E3Text text;
         private Group group;
         private Sheet currentSheet;
         private int sheetCount;
@@ -31,11 +31,11 @@ namespace KSPE3Lib
             }
         }
 
-        public Table(Project project, LineTemplate headerLineTemplate, List<string> headerLineTexts, LineTemplate lineTemplate, double bottomLineWidth, StringSeparator separator, TablePageTemplate firstSheetTemplate) : this (project, headerLineTemplate,headerLineTexts, lineTemplate, bottomLineWidth, separator, firstSheetTemplate, null)
+        public Table(E3Project project, LineTemplate headerLineTemplate, List<string> headerLineTexts, LineTemplate lineTemplate, double bottomLineWidth, StringSeparator separator, TablePageTemplate firstSheetTemplate) : this (project, headerLineTemplate,headerLineTexts, lineTemplate, bottomLineWidth, separator, firstSheetTemplate, null)
         {
         }
 
-        public Table(Project project, LineTemplate headerLineTemplate, List<string> headerLineTexts, LineTemplate lineTemplate, double bottomLineWidth, StringSeparator separator, TablePageTemplate firstPagetTemplate, TablePageTemplate subsequentPageTemplate = null )
+        public Table(E3Project project, LineTemplate headerLineTemplate, List<string> headerLineTexts, LineTemplate lineTemplate, double bottomLineWidth, StringSeparator separator, TablePageTemplate firstPagetTemplate, TablePageTemplate subsequentPageTemplate = null )
         {
             this.project = project;
             this.firstPageTemplate = firstPagetTemplate;
@@ -51,14 +51,14 @@ namespace KSPE3Lib
             this.graphic = project.GetGraphicById(0);
             this.group = project.GetGroupById(0);
             this.text = project.GetTextById(0);
-            currentSheet = null;
+            currentSheet = project.GetSheetById(0);
             sheetCount = 0;
             sheetIds = new List<int>();
         }
 
         public void AddLine(List<string> texts)
         {
-            if (currentSheet == null)
+            if (currentSheet.Id == 0)
                 CreateNewPage(firstPageTemplate);
             List<List<string>> separatedTexts = GetSeparatedTexts(texts);
             double lineHeight = GetLineHeight(separatedTexts);
@@ -78,7 +78,8 @@ namespace KSPE3Lib
 
         private void CreateNewPage(TablePageTemplate pageTemplate)
         {
-            currentSheet = CreateNewSheet(pageTemplate);
+            currentSheet.Id = CreateNewSheet(pageTemplate);
+            currentSheet.Name = sheetCount.ToString();
             sheetIds.Add(currentSheet.Id);
             CreateHeader(pageTemplate);
             uttermostPositionByY = pageTemplate.UttermostPositionByY;
@@ -86,18 +87,15 @@ namespace KSPE3Lib
             x = pageTemplate.HeaderLineX;
         }
 
-        private Sheet CreateNewSheet(TablePageTemplate template)
+        private int CreateNewSheet(TablePageTemplate template)
         {
             sheetCount++;
-            Sheet sheet;
             int sheetId;
             if (sheetIds.Count > 0)
                 sheetId = sheetIds[sheetIds.Count - 1];
             else
                 sheetId = 0;
-            sheet = project.CreateSheet(sheetCount.ToString(), template.Format, sheetId, Position.After);
-            sheet.Name = sheetCount.ToString();
-            return sheet;
+            return project.CreateSheet(sheetCount.ToString(), template.Format, sheetId, Position.After);
         }
 
         private int CreateHeader(TablePageTemplate sheetTemplate)

@@ -9,8 +9,8 @@ namespace KSPE3Lib
 {
     public class CableCore : Core
     {
-        internal CableCore(int id, E3Objects e3Objects)
-            : base(id, e3Objects)
+        internal CableCore(int id, E3ObjectFabric e3ObjectFabric)
+            : base(id, e3ObjectFabric)
         {
 
         }

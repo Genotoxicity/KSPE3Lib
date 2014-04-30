@@ -9,15 +9,21 @@ namespace KSPE3Lib
 {
     public class Device
     {
-        protected E3Objects e3Objects;
+        protected E3ObjectFabric e3ObjectFabric;
         protected e3Device device;
-        protected int id;
+        protected e3Component component;
 
-        public int Id
+        public virtual int Id
         {
             get
             {
-                return id;
+                return device.GetId();
+            }
+            set
+            {
+                device.SetId(value);
+                if (component != null)
+                    component.SetId(value);
             }
         }
 
@@ -33,11 +39,13 @@ namespace KSPE3Lib
             }
         }
 
-        public string Component
+        public string ComponentName
         {
             get
             {
-                return e3Objects.GetComponent(id).GetName();
+                if (component == null)
+                    component = e3ObjectFabric.GetComponent(Id);
+                return component.GetName();
             }
         }
 
@@ -57,11 +65,24 @@ namespace KSPE3Lib
             }
         }
 
-        protected Device(int id, E3Objects e3Objects)
+        protected Device(int id, E3ObjectFabric e3ObjectFabric)
         {
-            this.e3Objects = e3Objects;
-            this.id = id;
-            device = e3Objects.GetDevice(id);
+            this.e3ObjectFabric = e3ObjectFabric;
+            device = e3ObjectFabric.GetDevice(id);
+        }
+
+        public bool IsCable()
+        {
+            if (device.IsCable() == 1)
+                return true;
+            return false;
+        }
+
+        public bool IsWireGroup()
+        {
+            if (device.IsWireGroup() == 1)
+                return true;
+            return false;
         }
 
     }

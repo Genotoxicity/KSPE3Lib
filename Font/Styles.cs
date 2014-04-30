@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace KSPE3Lib
 {
-    [Flags]
+    [Flags, Serializable]
     public enum Styles
     {
         Bold = 0x01,

@@ -9,16 +9,23 @@ namespace KSPE3Lib
 {
     public class Group
     {
-        //private E3Objects e3Objects;
         private e3Group group;
 
-        public int Id { get; private set; }
-
-        internal Group(int id, E3Objects e3Objects)
+        public int Id
         {
-            Id = id;
-            //this.e3Objects = e3Objects;
-            group = e3Objects.GetGroup(id);
+            get
+            {
+                return group.GetId();
+            }
+            set
+            {
+                group.SetId(value);
+            }
+        }
+
+        internal Group(int id, E3ObjectFabric e3ObjectFabric)
+        {
+            group = e3ObjectFabric.GetGroup(id);
         }
 
         public int CreateGroup(List<int> ids)
