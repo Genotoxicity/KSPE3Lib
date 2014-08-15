@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Windows;
+using System;
 using e3;
 
 namespace KSPE3Lib
@@ -10,6 +8,9 @@ namespace KSPE3Lib
     public class DevicePin : Pin
     {
         private List<int> coreIds;
+        private int sheetId;
+        private Point position;
+        private bool isLocationVariablesSet;
 
         public List<int> CoreIds
         {
@@ -31,6 +32,7 @@ namespace KSPE3Lib
             {
                 base.Id = value;
                 coreIds = null;
+                isLocationVariablesSet = false;
             }
         }
 
@@ -38,13 +40,33 @@ namespace KSPE3Lib
         {
             get
             {
-                dynamic x = default(dynamic), y = default(dynamic), grid = default(dynamic);
-                return pin.GetSchemaLocation(ref x, ref y, ref grid);
+                if (!isLocationVariablesSet)
+                    SetLocationVariables();
+                return sheetId;
+            }
+        }
+
+        public Point Position
+        {
+            get
+            {
+                if (!isLocationVariablesSet)
+                    SetLocationVariables();
+                return position;
+            }
+        }
+
+        public int LogicalEquivalence
+        {
+            get
+            {
+                return pin.GetLogicalEquivalenceID();
             }
         }
 
         internal DevicePin(int id, E3ObjectFabric e3ObjectFabric) : base(id, e3ObjectFabric)
         {
+            isLocationVariablesSet = false;
         }
 
         private List<int> GetCoreIds()
@@ -65,6 +87,20 @@ namespace KSPE3Lib
         public bool IsPinView()
         {
             return pin.IsPinView() == 1;
+        }
+
+        private void SetLocationVariables()
+        {
+            isLocationVariablesSet = true;
+            dynamic xCoordinate = default(dynamic), yCoordinate = default(dynamic), grid = default(dynamic);
+            sheetId = pin.GetSchemaLocation(ref xCoordinate, ref yCoordinate, ref grid);
+            if (xCoordinate != null && yCoordinate != null)
+                position = new Point(xCoordinate, yCoordinate);
+            else
+            {
+                e3Device device = e3ObjectFabric.GetDevice(Id);
+                MessageBox.Show(String.Format("Проверьте расположение {0}{1}:{2}. Не удается получить расположение вывода", device.GetAssignment(), device.GetName(), Name),"Ошибка!", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
     }

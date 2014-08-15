@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Windows.Media;
 using e3;
 
@@ -9,12 +6,12 @@ namespace KSPE3Lib
 {
     static class E3ColorTable
     {
-        public static Dictionary<int, Color> GetColorTable(int processId)
+        public static Dictionary<int, Color> GetColorByCode(int processId)
         {
             int maxColorIndex = 255;
             E3ObjectFabric e3Objects = new E3ObjectFabric(processId);
-            Dictionary<int, Color> colors = new Dictionary<int, Color>();
-            colors.Add(-1, Colors.Black);
+            Dictionary<int, Color> colorByCode = new Dictionary<int, Color>();
+            colorByCode.Add(-1, Colors.Black);
             dynamic r = default(dynamic);
             dynamic g = default(dynamic);
             dynamic b = default(dynamic);
@@ -22,11 +19,11 @@ namespace KSPE3Lib
             for (int i = 0; i <= maxColorIndex; i++)
             {
                 job.GetRGBValue(i, ref r, ref g, ref b);
-                colors.Add(i, Color.FromArgb(0xFF, (byte)r, (byte)g, (byte)b));
+                colorByCode.Add(i, Color.FromArgb(0xFF, (byte)r, (byte)g, (byte)b));
             }
             job = null;
             e3Objects.Release();
-            return colors;
+            return colorByCode;
         }
     }
 }

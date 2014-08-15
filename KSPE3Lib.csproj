@@ -63,7 +63,11 @@
   <ItemGroup>
     <Compile Include="AbscissaDirection.cs" />
     <Compile Include="ColorPicker.cs" />
+    <Compile Include="Interface\Area.cs" />
     <Compile Include="Interface\Connection.cs" />
+    <Compile Include="Interface\Devices\SymbolReturnParameter.cs" />
+    <Compile Include="Interface\Net.cs" />
+    <Compile Include="Interface\SymbolTransformation.cs" />
     <Compile Include="Interface\Signal.cs" />
     <Compile Include="Interface\Symbol.cs" />
     <Compile Include="SelectedColorChangedEventArgs.cs" />

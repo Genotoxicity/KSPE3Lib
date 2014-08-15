@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 using e3;
 
 namespace KSPE3Lib
@@ -30,6 +29,8 @@ namespace KSPE3Lib
             e3Processes.RemoveAll(process => !IsAppropriateProcess(process));
             SelectedProcessId = 0;
             SelectedProjectTitle = String.Empty;
+            e3Application app;
+            e3Job job;
             switch (e3Processes.Count)
             {
                 case 0:
@@ -38,13 +39,21 @@ namespace KSPE3Lib
                 case 1:
                     SelectedStatus = SelectionStatus.Selected;
                     SelectedProcessId = e3Processes[0].Id;
-                    SelectedProjectTitle = ((e3Application)e3Dispatcher.GetE3ByProcessId(e3Processes[0].Id)).CreateJobObject().GetName();
+                    app = e3Dispatcher.GetE3ByProcessId(SelectedProcessId) as e3Application;
+                    job = app.CreateJobObject();
+                    SelectedProjectTitle = job.GetName();
+                    Marshal.FinalReleaseComObject(job);
                     break;
                 default:
                     int selectedIndex = undefinedSelectionIndex;
                     List<string> projectNames = new List<string>(e3Processes.Count);
                     foreach (Process process in e3Processes)
-                        projectNames.Add(((e3Application)e3Dispatcher.GetE3ByProcessId(process.Id)).CreateJobObject().GetName());
+                    {
+                        app = e3Dispatcher.GetE3ByProcessId(process.Id) as e3Application;
+                        job = app.CreateJobObject();
+                        projectNames.Add(job.GetName());
+                        Marshal.FinalReleaseComObject(job);
+                    }
                     ApplicationSelectingWindow window = new ApplicationSelectingWindow(projectNames, new Action<int>(index=>selectedIndex = index));
                     window.ShowDialog();
                     if (selectedIndex != undefinedSelectionIndex)
@@ -61,10 +70,10 @@ namespace KSPE3Lib
 
         private bool IsAppropriateProcess(Process process)
         {
-            e3Application e3App = e3Dispatcher.GetE3ByProcessId(process.Id) as e3Application;
-            if (e3App == null)  // на случай открытой БД
+            e3Application app = e3Dispatcher.GetE3ByProcessId(process.Id) as e3Application;
+            if (app == null)  // на случай открытой БД
                 return false;
-            int jobCount = e3App.GetJobCount();
+            int jobCount = app.GetJobCount();
             if (jobCount == 0)  // на случай приложения без открытого проекта
                 return false;
             return true;

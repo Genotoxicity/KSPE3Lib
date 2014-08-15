@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using e3;
+﻿using e3;
 
 namespace KSPE3Lib
 {
@@ -83,6 +78,18 @@ namespace KSPE3Lib
             if (device.IsWireGroup() == 1)
                 return true;
             return false;
+        }
+
+        public bool IsTerminal()
+        {
+            if (device.IsTerminal() == 1)
+                return true;
+            return false;
+        }
+
+        public string GetAttributeValue(string attributeName)
+        {
+            return device.GetAttributeValue(attributeName);
         }
 
     }

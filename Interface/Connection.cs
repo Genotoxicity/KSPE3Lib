@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
+using System.Windows;
+using System;
 using e3;
 
 namespace KSPE3Lib
@@ -13,7 +12,6 @@ namespace KSPE3Lib
         private List<DevicePin> pins;
         private List<int> pinIds;
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists")]
         public List<DevicePin> Pins
         {
             get
@@ -88,6 +86,21 @@ namespace KSPE3Lib
         public void Highlight()
         {
             connection.Highlight();
+        }
+
+        public int Create(int sheetId, List<Point> points)
+        {
+            int pointCount = points.Count;
+            dynamic arrayOfX = Array.CreateInstance(typeof(object), pointCount + 1); // e3 работает только с массивами, начинающимися с null
+            dynamic arrayOfY = Array.CreateInstance(typeof(object), pointCount + 1); 
+            arrayOfX.SetValue(null, 0);
+            arrayOfY.SetValue(null, 0);
+            for (int i = 0; i < pointCount; i++)
+            {
+                arrayOfX.SetValue(points[i].X, i + 1);
+                arrayOfY.SetValue(points[i].Y, i + 1);
+            }
+            return connection.Create(sheetId, pointCount, ref arrayOfX, ref arrayOfY);
         }
 
     }

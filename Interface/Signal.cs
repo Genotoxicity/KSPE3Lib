@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using e3;
 
 namespace KSPE3Lib
@@ -58,7 +56,7 @@ namespace KSPE3Lib
             }
         }
 
-        public Signal(int id, E3ObjectFabric e3ObjectFabric)
+        internal Signal(int id, E3ObjectFabric e3ObjectFabric)
         {
             signal = e3ObjectFabric.GetSignal(id);
         }

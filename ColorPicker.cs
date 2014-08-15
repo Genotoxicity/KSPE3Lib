@@ -1,16 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Windows;
-using System.Windows.Data;
 using System.Windows.Media;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using System.Windows.Shapes;
-using System.Threading;
-using System.IO;
-using e3;
 
 namespace KSPE3Lib
 {
@@ -27,7 +21,7 @@ namespace KSPE3Lib
         private const double radioButtonSide = 18;
         private const int elements = 16;
         private const int autoColorIndex = -1;
-        private Dictionary<int, Color> colors;
+        private Dictionary<int, Color> colorByCode;
         private ToggleButton topButton;
         private RadioButton autoColorRadioButton;
         private Window colorPickerWindow;
@@ -50,7 +44,7 @@ namespace KSPE3Lib
         {
             get
             {
-                return colors[SelectedColorIndex];
+                return colorByCode[SelectedColorIndex];
             }
         }
 
@@ -90,13 +84,13 @@ namespace KSPE3Lib
             }
         }
 
-        public ColorPicker(Dictionary<int, Color> colors) : this(colors, -1)
+        public ColorPicker(Dictionary<int, Color> colorByCode) : this(colorByCode, -1)
         { 
         }
 
-        public ColorPicker(Dictionary<int, Color> colors, int selectedColorIndex)
+        public ColorPicker(Dictionary<int, Color> colorByCode, int selectedColorIndex)
         {
-            this.colors = colors;
+            this.colorByCode = colorByCode;
             double colorPickerGridWidth = radioButtonSide * elements;
             ResourceDictionary dictionary = GetResourceDictionary();
             double autoColorRadioButtonHeight = 22;
@@ -110,11 +104,11 @@ namespace KSPE3Lib
             colorPickerGrid.Children.Add(autoColorRadioButton);
             ControlTemplate colorElementTemplate = dictionary["ColorElementTemplate"] as ControlTemplate;
             Color color;
-            for (int colorIndex = 0; colorIndex <= colors.Keys.Max<int>(); colorIndex++)
+            for (int colorIndex = 0; colorIndex <= colorByCode.Keys.Max<int>(); colorIndex++)
             {
                 int rowIndex = (colorIndex / elements) + 1; // в первый ряд сетки уже добавлен элемент
                 int columnIndex = colorIndex % elements;
-                color = colors[colorIndex];
+                color = colorByCode[colorIndex];
                 string tip = String.Format("{0} (#{1}{2}{3})", colorIndex, color.R.ToString("X2"), color.G.ToString("X2"), color.B.ToString("X2"));
                 RadioButton radioButton = GetRadioButton(colorElementTemplate, ref color, colorIndex, tip);
                 Grid.SetRow(radioButton, rowIndex);
@@ -344,7 +338,7 @@ namespace KSPE3Lib
             SelectedColorIndex = colorIndex;
             if (colorIndex >= 0)
             {
-                solidColorBrush.Color = colors[colorIndex];
+                solidColorBrush.Color = colorByCode[colorIndex];
                 topButton.Background = solidColorBrush;
                 topButton.Content = String.Empty;
                 autoColorRadioButton.BorderBrush = popupBorderBrush;

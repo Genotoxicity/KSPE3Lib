@@ -1,15 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
-using System.Windows.Shapes;
-using System.Threading;
-using System.IO;
-using e3;
 
 namespace KSPE3Lib
 {
@@ -35,8 +29,8 @@ namespace KSPE3Lib
             listBox.Width = 250;
             listBox.Height = 300;
             listBox.SelectionChanged += listBox_SelectionChanged;
-            Dictionary<int, Color> colors = E3ColorTable.GetColorTable(processId);
-            ColorPicker colorPicker = new ColorPicker(colors);
+            Dictionary<int, Color> colorByCode = E3ColorTable.GetColorByCode(processId);
+            ColorPicker colorPicker = new ColorPicker(colorByCode);
             colorPicker.VerticalAlignment = VerticalAlignment.Center;
             colorPicker.SelectedColorChanged += colorPicker_SelectedColorChanged;
             textBlockForeGroundBrush = new SolidColorBrush();

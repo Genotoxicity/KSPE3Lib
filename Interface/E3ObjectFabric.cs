@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 using e3;
 
 namespace KSPE3Lib
@@ -93,6 +88,13 @@ namespace KSPE3Lib
             e3Signal signal = job.CreateSignalObject();
             signal.SetId(id);
             return signal;
+        }
+
+        internal e3Net GetNet(int id)
+        {
+            e3Net net = job.CreateNetObject();
+            net.SetId(id);
+            return net;
         }
 
         internal e3Connection GetConnection(int id)

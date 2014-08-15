@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using e3;
-using System.Windows;
 
 namespace KSPE3Lib
 {
@@ -97,7 +92,7 @@ namespace KSPE3Lib
             }
         }
 
-        public CableDevice GetCableById(int id)
+        public CableDevice GetCableDeviceById(int id)
         {
             return new CableDevice(id, e3ObjectFabric);
         }
@@ -157,7 +152,20 @@ namespace KSPE3Lib
             }
         }
 
-        public NormalDevice GetDeviceById(int id)
+        public List<int> SheetIds
+        {
+            get
+            {
+                dynamic sheetIds = default(dynamic);
+                int sheetCount = e3ObjectFabric.GetJob().GetSheetIds(ref sheetIds);
+                List<int> ids = new List<int>(sheetCount);
+                for (int i = 1; i <= sheetCount; i++)
+                    ids.Add(sheetIds[i]);
+                return ids;
+            }
+        }
+
+        public NormalDevice GetNormalDeviceById(int id)
         {
             return new NormalDevice(id, e3ObjectFabric);
         }
@@ -165,11 +173,6 @@ namespace KSPE3Lib
         public DevicePin GetDevicePinById(int id)
         {
             return new DevicePin(id, e3ObjectFabric);
-        }
-
-        public Core GetCoreById(int id)
-        {
-            return new Core(id, e3ObjectFabric);
         }
 
         public WireCore GetWireCoreById(int id)
@@ -192,38 +195,19 @@ namespace KSPE3Lib
             return new Group(id, e3ObjectFabric);
         }
 
-        public List<int> SheetIds
-        {
-            get
-            {
-                dynamic sheetIds = default(dynamic);
-                int sheetCount = e3ObjectFabric.GetJob().GetSheetIds(ref sheetIds);
-                List<int> ids = new List<int>(sheetCount);
-                for (int i = 1; i <= sheetCount; i++)
-                    ids.Add(sheetIds[i]);
-                return ids;
-            }
-        }
-
         public Sheet GetSheetById(int id)
         {
             return new Sheet(id, e3ObjectFabric);
         }
 
-        public int CreateSheet(string name, string format)
-        {
-            return CreateSheet(name, format, 0, Position.After);
-        }
-
-        public int CreateSheet(string name, string format, int targetSheetId, Position position)
-        {
-            int newSheetId = e3ObjectFabric.GetSheet(0).Create(0, name, format, targetSheetId, (int)position);
-            return newSheetId;
-        }
-
         public Signal GetSignalById(int id)
         {
             return new Signal(id, e3ObjectFabric);
+        }
+
+        public Net GetNetById(int id)
+        {
+            return new Net(id, e3ObjectFabric);
         }
 
         public Symbol GetSymbolById(int id)

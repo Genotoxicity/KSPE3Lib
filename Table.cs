@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace KSPE3Lib
 {
@@ -78,7 +75,7 @@ namespace KSPE3Lib
 
         private void CreateNewPage(TablePageTemplate pageTemplate)
         {
-            currentSheet.Id = CreateNewSheet(pageTemplate);
+            CreateNewSheet(pageTemplate);
             currentSheet.Name = sheetCount.ToString();
             sheetIds.Add(currentSheet.Id);
             CreateHeader(pageTemplate);
@@ -95,7 +92,7 @@ namespace KSPE3Lib
                 sheetId = sheetIds[sheetIds.Count - 1];
             else
                 sheetId = 0;
-            return project.CreateSheet(sheetCount.ToString(), template.Format, sheetId, Position.After);
+            return currentSheet.Create(sheetCount.ToString(), template.Format, sheetId, Position.After);
         }
 
         private int CreateHeader(TablePageTemplate sheetTemplate)
@@ -116,10 +113,7 @@ namespace KSPE3Lib
             for (int i = 0; i < headerLineTexts.Count; i++)
             {
                 double xText = currentSheet.MoveRight(xLeft, headerLineTemplate.TextHorizontalOffsets[i]);
-                int id = graphic.CreateText(currentSheet.Id, headerLineTexts[i], xText, yText);
-                text.Id = id;
-                text.SetFont(headerLineTemplate.Font);
-                ids.Add(id);
+                ids.Add( text.CreateText(currentSheet.Id, headerLineTexts[i], xText, yText, headerLineTemplate.Font));
             }
             return ids;
         }
@@ -130,10 +124,7 @@ namespace KSPE3Lib
                 return -1;
             double xText = currentSheet.MoveRight(sheetTemplate.HeaderLineX, headerLineTemplate.Width/2);
             double yText = currentSheet.MoveUp(sheetTemplate.HeaderLineY, sheetTemplate.HeaderText.Offset);
-            int id = graphic.CreateText(currentSheet.Id, sheetTemplate.HeaderText.Text, xText, yText);
-            text.Id = id;
-            text.SetFont(sheetTemplate.HeaderText.Font);
-            return id;
+            return text.CreateText(currentSheet.Id, sheetTemplate.HeaderText.Text, xText, yText, sheetTemplate.HeaderText.Font);
         }
 
         private List<List<string>> GetSeparatedTexts(List<string> texts)
@@ -187,10 +178,7 @@ namespace KSPE3Lib
                 double yText = currentSheet.MoveDown(yTop, lineTemplate.TextVerticalOffset);
                 foreach (string separatedText in separatedTexts[i])
                 {
-                    int id = graphic.CreateText(currentSheet.Id, separatedText, xText, yText);
-                    text.Id = id;
-                    text.SetFont(lineTemplate.Font);
-                    ids.Add(id);
+                    ids.Add(text.CreateText(currentSheet.Id, separatedText, xText, yText, lineTemplate.Font));
                     yText = currentSheet.MoveDown(yText, lineTemplate.Height);
                 }
             }

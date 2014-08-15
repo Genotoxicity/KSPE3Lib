@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using e3;
 
 namespace KSPE3Lib
@@ -10,8 +7,11 @@ namespace KSPE3Lib
     public class Sheet
     {
         private e3Sheet sheet;
+        private E3ObjectFabric objectFabric;
         private OrdinateDirection ordinateDirection;
         private AbscissaDirection abscissaDirection;
+        private Area drawingArea;
+        private bool isDrawingAreaGot;
 
         public int Id
         {
@@ -23,6 +23,7 @@ namespace KSPE3Lib
             {
                 sheet.SetId(value);
                 SetAxesDirections();
+                isDrawingAreaGot = false;
             }
         }   
 
@@ -39,10 +40,38 @@ namespace KSPE3Lib
             }
         }
 
+        public List<int> SymbolIds
+        {
+            get
+            {
+                dynamic symbolIds = default(dynamic);
+                int symbolCount = sheet.GetSymbolIds(ref symbolIds);
+                List<int> ids = new List<int>(symbolCount);
+                for (int i = 1; i <= symbolCount; i++)
+                    ids.Add(symbolIds[i]);
+                return ids;
+            }
+        }
+
+        public Area DrawingArea
+        {
+            get
+            {
+                if (!isDrawingAreaGot)
+                {
+                    drawingArea = GetDrawingArea();
+                    isDrawingAreaGot = true;
+                }
+                return drawingArea;
+            }
+        }
+
         internal Sheet(int id, E3ObjectFabric e3ObjectFabric)
         {
             sheet = e3ObjectFabric.GetSheet(id);
+            objectFabric = e3ObjectFabric;
             SetAxesDirections();
+            isDrawingAreaGot = false;
         }
 
         private void SetAxesDirections()
@@ -67,14 +96,14 @@ namespace KSPE3Lib
             sheet.SetAttributeValue(attribute, value);
         }
 
-        public bool IsTypeOf(int sheetTypeCode)
+        public bool IsSchematicTypeOf(int schematicTypeCode)
         {
-            dynamic sheetTypes = default(dynamic);
-            int sheetTypeCount = sheet.GetSchematicTypes(ref sheetTypes);
-            if (sheetTypeCount == 0)
+            dynamic schematicTypes = default(dynamic);
+            int schematicTypeCount = sheet.GetSchematicTypes(ref schematicTypes);
+            if (schematicTypeCount == 0)
                 return false;
-            for (int i = 1; i <= sheetTypeCount; i++)
-                if (sheetTypes[i] == sheetTypeCode)
+            for (int i = 1; i <= schematicTypeCount; i++)
+                if (schematicTypes[i] == schematicTypeCode)
                     return true;
             return false;
         }
@@ -112,6 +141,43 @@ namespace KSPE3Lib
             if (ordinateDirection == OrdinateDirection.TopToBottom)
                 return target <= value;
             return target >= value;
+        }
+
+        public bool IsRightOfTarget(double target, double value)
+        {
+            if (abscissaDirection == AbscissaDirection.LeftToRight)
+                return target <= value;
+            return target >= value;
+        }
+
+        public int Create(string name, string format)
+        {
+            return Create(name, format, 0, Position.After);
+        }
+
+        public int Create(string name, string format, int targetSheetId, Position position)
+        {
+            int newSheetId = objectFabric.GetSheet(0).Create(0, name, format, targetSheetId, (int)position);
+            Id = newSheetId;
+            return newSheetId;
+        }
+
+        public int Delete()
+        {
+            if (Id > 0)
+            {
+                int result = sheet.Delete();
+                Id = 0;
+                return result;
+            }
+            return 0;
+        }
+
+        private Area GetDrawingArea()
+        { 
+            dynamic xMin = default(dynamic), yMin = default(dynamic), xMax = default(dynamic), yMax = default(dynamic);
+            sheet.GetDrawingArea(ref xMin, ref yMin, ref xMax, ref yMax);
+            return new Area(xMin, xMax, yMax, yMin);
         }
     }
 }

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using e3;
+﻿using System.Collections.Generic;
 
 namespace KSPE3Lib
 {
@@ -13,6 +8,16 @@ namespace KSPE3Lib
             : base(id, e3ObjectFabric)
         { 
         
+        }
+
+        public List<int> GetSymbolIds(SymbolReturnParameter parameter)
+        {
+            dynamic symbolIds = default(dynamic);
+            int symbolCount = device.GetSymbolIds(ref symbolIds, (int) parameter);
+            List<int> ids = new List<int>(symbolCount);
+            for (int i = 1; i <= symbolCount; i++)
+                ids.Add(symbolIds[i]);
+            return ids;
         }
     }
 }
