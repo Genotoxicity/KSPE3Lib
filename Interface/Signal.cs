@@ -7,8 +7,6 @@ namespace KSPE3Lib
     public class Signal
     {
         private e3Signal signal;
-        private List<int> devicePinIds;
-        private List<int> coreIds;
 
         public int Id
         {
@@ -19,8 +17,6 @@ namespace KSPE3Lib
             set
             {
                 signal.SetId(value);
-                devicePinIds = null;
-                coreIds = null;
             }
         }
 
@@ -28,9 +24,17 @@ namespace KSPE3Lib
         {
             get
             {
-                if (devicePinIds == null)
-                    devicePinIds = GetDevicePinIds();
-                return devicePinIds;
+                dynamic pinIds = default(dynamic);
+                int pinCount = signal.GetPinIds(ref pinIds);
+                List<int> ids = new List<int>(pinCount);
+                for (int i = 1; i <= pinCount; i++)
+                    ids.Add(pinIds[i]);
+                if (CoreIds.Count > 0)
+                {
+                    IEnumerable<int> except = ids.Except<int>(CoreIds);
+                    ids = except.ToList<int>();
+                }
+                return ids;
             }
         }
 
@@ -38,9 +42,12 @@ namespace KSPE3Lib
         {
             get
             {
-                if (coreIds == null)
-                    coreIds = GetCoreIds();
-                return coreIds;
+                dynamic signalCoreIds = default(dynamic);
+                int coreCount = signal.GetCoreIds(ref signalCoreIds);
+                List<int> ids = new List<int>(coreCount);
+                for (int i = 1; i <= coreCount; i++)
+                    ids.Add(signalCoreIds[i]);
+                return ids;
             }
         }
 
@@ -61,29 +68,9 @@ namespace KSPE3Lib
             signal = e3ObjectFabric.GetSignal(id);
         }
 
-        private List<int> GetDevicePinIds()
+        public int GetIdByName(string signalName)
         {
-            dynamic pinIds = default(dynamic);
-            int pinCount = signal.GetPinIds(ref pinIds);
-            List<int> ids = new List<int>(pinCount);
-            for (int i = 1; i <= pinCount; i++)
-                ids.Add(pinIds[i]);
-            if (CoreIds.Count > 0)
-            {
-                IEnumerable<int> except = ids.Except<int>(CoreIds);
-                ids = except.ToList<int>();
-            }
-            return ids;
-        }
-
-        private List<int> GetCoreIds()
-        {
-            dynamic signalCoreIds = default(dynamic);
-            int coreCount = signal.GetCoreIds(ref signalCoreIds);
-            List<int> ids = new List<int>(coreCount);
-            for (int i = 1; i <= coreCount; i++)
-                ids.Add(signalCoreIds[i]);
-            return ids;
+            return signal.Search(signalName);
         }
 
     }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
@@ -16,38 +17,44 @@ namespace KSPE3Lib
                 return -1;
             if (!aNullOrEmpty && bNullOrEmpty)
                 return 1;
-            if (a.Equals(b, StringComparison.Ordinal))
-                return 0;
             int aLength = a.Length;
             int bLength = b.Length;
             int minLength = Math.Min(aLength, bLength);
-            int index = -1;
+            string numberPattern = @"^\d+";
             for (int i = 0; i < minLength; i++)
-                if ((a[i].Equals(b[i])))
-                    index = i;
-                else
-                    break;
-            if (index >= 0)
-                if (index == (minLength - 1))
-                    return aLength - bLength;
+            {
+                char aChar = a[i];
+                char bChar = b[i];
+                if (Char.IsDigit(aChar) && Char.IsDigit(bChar))
+                {
+                    string aNum = Regex.Match(a.Substring(i), numberPattern).ToString();
+                    string bNum = Regex.Match(b.Substring(i), numberPattern).ToString();
+                    int aNumLength = aNum.Length;
+                    int bNumLength = bNum.Length;
+                    int aValue, bValue;
+                    int.TryParse(aNum, out aValue);
+                    int.TryParse(bNum, out bValue);
+                    if (aValue == bValue)
+                    {
+                        if (aNumLength == bNumLength)
+                        {
+                            i += aNumLength;
+                            continue;
+                        }
+                        else
+                            return -(aNumLength - bNumLength);
+                    }
+                    else
+                        return aValue - bValue;
+                }
                 else
                 {
-                    a = a.Substring(index + 1);
-                    b = b.Substring(index + 1);
+                    int compareResult = aChar.CompareTo(bChar);
+                    if (compareResult != 0)
+                        return compareResult;
                 }
-            string numberPattern = @"^\d+";
-            Match aMatch = Regex.Match(a, numberPattern);
-            Match bMatch = Regex.Match(b, numberPattern);
-            if (!aMatch.Success && !bMatch.Success)
-                return String.Compare(a,b, StringComparison.Ordinal);
-            if (aMatch.Success && !bMatch.Success)
-                return -1;
-            if (!aMatch.Success && bMatch.Success)
-                return 1;
-            int aDigits, bDigits;
-            int.TryParse(aMatch.ToString(), out aDigits);
-            int.TryParse(bMatch.ToString(), out bDigits);
-            return aDigits - bDigits;
+            }
+            return aLength - bLength;
         }
     }
 }

@@ -53,6 +53,66 @@ namespace KSPE3Lib
             }
         }
 
+        public List<int> InsideSymbolIds
+        {
+            get
+            {
+                dynamic insideSymbolIds = default(dynamic);
+                int insideSymbolCount = sheet.GetInsideSymbolIds(ref insideSymbolIds);
+                List<int> ids = new List<int>(insideSymbolCount);
+                for (int i = 1; i <= insideSymbolCount; i++)
+                    ids.Add(insideSymbolIds[i]);
+                return ids;
+            }
+        }
+
+        public List<int> GraphicIds
+        {
+            get
+            {
+                dynamic graphicIds = default(dynamic);
+                int graphicCount = sheet.GetGraphIds(ref graphicIds);
+                List<int> ids = new List<int>(graphicCount);
+                for (int i = 1; i <= graphicCount; i++)
+                    ids.Add(graphicIds[i]);
+                return ids;
+            }
+        }
+
+        public List<int> GroupIds
+        {
+            get
+            {
+                dynamic groupIds = default(dynamic);
+                int groupCount = sheet.GetGroupIds(ref groupIds);
+                List<int> ids = new List<int>(groupCount);
+                for (int i = 1; i <= groupCount; i++)
+                    ids.Add(groupIds[i]);
+                return ids;
+            }
+        }
+
+        public List<int> EmbeddedSheetIds
+        {
+            get
+            { 
+                dynamic embeddedSheetIds = default(dynamic);
+                int embeddedSheetCount = sheet.GetEmbeddedSheetIds(ref embeddedSheetIds);
+                List<int> ids = new List<int>(embeddedSheetCount);
+                for (int i = 1; i <= embeddedSheetCount; i++)
+                    ids.Add(embeddedSheetIds[i]);
+                return ids;
+            }
+        }
+
+        public int ParentSheetId
+        {
+            get
+            {
+                return sheet.GetParentSheetId();
+            }
+        }
+
         public Area DrawingArea
         {
             get
@@ -63,6 +123,14 @@ namespace KSPE3Lib
                     isDrawingAreaGot = true;
                 }
                 return drawingArea;
+            }
+        }
+
+        public bool IsPanel
+        {
+            get
+            {
+                return sheet.IsPanel() > 0 ? true : false;
             }
         }
 
@@ -89,11 +157,6 @@ namespace KSPE3Lib
                 abscissaDirection = AbscissaDirection.LeftToRight;
             else
                 abscissaDirection = AbscissaDirection.RightToLeft;
-        }
-
-        public void SetAttribute(string attribute, string value)
-        {
-            sheet.SetAttributeValue(attribute, value);
         }
 
         public bool IsSchematicTypeOf(int schematicTypeCode)
@@ -139,15 +202,57 @@ namespace KSPE3Lib
         public bool IsUnderTarget(double target, double value)
         {
             if (ordinateDirection == OrdinateDirection.TopToBottom)
+                return target < value;
+            return target > value;
+        }
+
+        public bool IsAboveTarget(double target, double value)
+        {
+            if (ordinateDirection == OrdinateDirection.TopToBottom)
+                return target > value;
+            return target < value;
+        }
+
+        public bool IsUnderOrEqualTarget(double target, double value)
+        {
+            if (ordinateDirection == OrdinateDirection.TopToBottom)
                 return target <= value;
             return target >= value;
+        }
+
+        public bool IsAboveOrEqualTarget(double target, double value)
+        {
+            if (ordinateDirection == OrdinateDirection.TopToBottom)
+                return target >= value;
+            return target <= value;
         }
 
         public bool IsRightOfTarget(double target, double value)
         {
             if (abscissaDirection == AbscissaDirection.LeftToRight)
+                return target < value;
+            return target > value;
+        }
+
+        public bool IsLeftOfTarget(double target, double value)
+        {
+            if (abscissaDirection == AbscissaDirection.LeftToRight)
+                return target > value;
+            return target < value;
+        }
+
+        public bool IsRightOfOrEqualTarget(double target, double value)
+        {
+            if (abscissaDirection == AbscissaDirection.LeftToRight)
                 return target <= value;
             return target >= value;
+        }
+
+        public bool IsLeftOfOrEqualTarget(double target, double value)
+        {
+            if (abscissaDirection == AbscissaDirection.LeftToRight)
+                return target >= value;
+            return target <= value;
         }
 
         public int Create(string name, string format)
@@ -171,6 +276,31 @@ namespace KSPE3Lib
                 return result;
             }
             return 0;
+        }
+
+        public void ExportImage(string fileName, string fileFormat)
+        {
+            sheet.ExportImage(fileFormat, 0, fileName);
+        }
+
+        public string GetAttributeValue(string attribute)
+        {
+            return sheet.GetAttributeValue(attribute);
+        }
+
+        public void SetAttribute(string attribute, string value)
+        {
+            sheet.SetAttributeValue(attribute, value);
+        }
+
+        public List<int> GetTextIds(int typeCode)
+        {
+            dynamic textIds = default(dynamic);
+            int textCount = sheet.GetTextIds(ref textIds, typeCode);
+            List<int> ids = new List<int>(textCount);
+            for (int i = 1; i <= textCount; i++)
+                ids.Add(textIds[i]);
+            return ids;
         }
 
         private Area GetDrawingArea()

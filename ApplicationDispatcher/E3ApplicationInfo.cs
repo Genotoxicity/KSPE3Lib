@@ -63,7 +63,7 @@ namespace KSPE3Lib
             }
         }
 
-        internal E3ApplicationInfo(SelectionStatus status, Process process)
+        /*internal E3ApplicationInfo(SelectionStatus status, Process process)
         {
             this.status = status;
             if (process != null)
@@ -76,7 +76,7 @@ namespace KSPE3Lib
                 processId = 0;
                 title = String.Empty;
             }
-        }
+        }*/
 
     }
 }

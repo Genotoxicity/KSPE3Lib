@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Windows;
 using System;
 using e3;
 
@@ -7,9 +8,21 @@ namespace KSPE3Lib
     public class Symbol
     {
         private e3Symbol symbol;
-        private List<int> pinIds;
         private bool isAreaGot;
         private Area area;
+        private Point position;
+        private int sheetId;
+        private bool isLocationVariablesSet;
+
+        public int SheetId
+        {
+            get
+            {
+                if (!isLocationVariablesSet)
+                    SetLocationVariables();
+                return sheetId;
+            }
+        }
 
         public Area Area
         {
@@ -33,8 +46,8 @@ namespace KSPE3Lib
             set
             {
                 symbol.SetId(value);
-                pinIds = null;
                 isAreaGot = false;
+                isLocationVariablesSet = false;
             }
         }
 
@@ -43,6 +56,14 @@ namespace KSPE3Lib
             get
             {
                 return symbol.GetName();
+            }
+        }
+
+        public string Version
+        {
+            get
+            {
+                return symbol.GetVersion();
             }
         }
 
@@ -58,9 +79,12 @@ namespace KSPE3Lib
         {
             get
             {
-                if (pinIds == null)
-                    pinIds = GetPinIds();
-                return pinIds;
+                dynamic pinIds = default(dynamic);
+                int pinCount = symbol.GetPinIds(ref pinIds);
+                List<int> ids = new List<int>(pinCount);
+                for (int i = 1; i <= pinCount; i++)
+                    ids.Add(pinIds[i]);
+                return ids;
             }
         }
 
@@ -76,15 +100,16 @@ namespace KSPE3Lib
         {
             symbol = e3ObjectFabric.GetSymbol(id);
             isAreaGot = false;
+            isLocationVariablesSet = false;
         }
 
-        private List<int> GetPinIds()
+        public List<int> GetTextIdsOfType(int textType)
         {
-            dynamic pinIds = default(dynamic);
-            int pinCount = symbol.GetPinIds(ref pinIds);
-            List<int> ids = new List<int>(pinCount);
-            for (int i = 1; i <= pinCount; i++)
-                ids.Add(pinIds[i]);
+            dynamic textIds = default(dynamic);
+            int textCount = symbol.GetTextIds(ref textIds, textType);
+            List<int> ids = new List<int>(textCount);
+            for (int i = 1; i <= textCount; i++)
+                ids.Add(textIds[i]);
             return ids;
         }
 
@@ -113,9 +138,44 @@ namespace KSPE3Lib
             return symbol.Place(sheetId, x, y,rotation);
         }
 
+        public int PlaceAsGraphic(int sheetId, double x, double y)
+        {
+            return symbol.PlaceAsGraphic(sheetId, x, y, null, 0, 0, 0);
+        }
+
         public int Delete()
         {
             return symbol.Delete();
+        }
+
+        public int Jump()
+        {
+            return symbol.Jump();
+        }
+
+        public int Load(string name, string version)
+        {
+            return symbol.Load(name, version);
+        }
+
+        public int PlaceInteractively()
+        {
+            return symbol.PlaceInteractively();
+        }
+
+        private void SetLocationVariables()
+        {
+            isLocationVariablesSet = true;
+            dynamic dx = default(dynamic);
+            dynamic dy = default(dynamic);
+            dynamic grid = default(dynamic);
+            sheetId = symbol.GetSchemaLocation(ref dx, ref dy, ref grid);
+            position = new Point((double)dx, (double)dx);
+        }
+
+        public void SetAttribute(string attribute, string value)
+        {
+            symbol.SetAttributeValue(attribute, value);
         }
 
         private Area GetArea()

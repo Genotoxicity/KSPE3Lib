@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using e3;
 
 namespace KSPE3Lib
@@ -22,18 +23,6 @@ namespace KSPE3Lib
         public E3Project(int applicationProcessId)
         {
             e3ObjectFabric = new E3ObjectFabric(applicationProcessId);
-        }
-
-        public List<WireCore> Wires
-        {
-            get
-            {
-                List<int> wireIds = WireIds;
-                List<WireCore> wires = new List<WireCore>(wireIds.Count);
-                foreach (int wireId in wireIds)
-                    wires.Add(new WireCore(wireId, e3ObjectFabric));
-                return wires;
-            }
         }
 
         public List<int> WireIds
@@ -66,18 +55,6 @@ namespace KSPE3Lib
             return undefinedId;   // если проводов не найдено
         }
 
-        public List<CableDevice> Cables
-        {
-            get
-            {
-                List<int> cableIds = CableIds;
-                List<CableDevice> cables = new List<CableDevice>(cableIds.Count);
-                foreach (int cableId in cableIds)
-                    cables.Add(new CableDevice(cableId, e3ObjectFabric));
-                return cables;
-            }
-        }
-
         public List<int> CableIds
         {
             get
@@ -92,26 +69,58 @@ namespace KSPE3Lib
             }
         }
 
+        public List<int> DeviceIds
+        {
+            get
+            {
+                dynamic deviceIds = default(dynamic);
+                int deviceCount = e3ObjectFabric.GetJob().GetDeviceIds(ref deviceIds);
+                List<int> ids = new List<int>(deviceCount);
+                for (int i = 1; i <= deviceCount; i++)    // e3 в [0] всегда возвращает null
+                    ids.Add(deviceIds[i]);
+                return ids;
+            }
+        }
+
+        public List<int> AllDeviceIds
+        {
+            get
+            {
+                dynamic allDeviceIds = default(dynamic);
+                int allDeviceCount = e3ObjectFabric.GetJob().GetAllDeviceIds(ref allDeviceIds);
+                List<int> ids = new List<int>(allDeviceCount);
+                for (int i = 1; i <= allDeviceCount; i++)    // e3 в [0] всегда возвращает null
+                    ids.Add(allDeviceIds[i]);
+                return ids;
+            }
+        }
+
+        public List<int> TreeSelectedSheetIds
+        {
+            get
+            {
+                dynamic treeSelectedSheetIds = default(dynamic);
+                int sheetCount = e3ObjectFabric.GetJob().GetTreeSelectedSheetIds(ref treeSelectedSheetIds);
+                List<int> ids = new List<int>(sheetCount);
+                for (int i = 1; i <= sheetCount; i++)    // e3 в [0] всегда возвращает null
+                    ids.Add(treeSelectedSheetIds[i]);
+                return ids;
+            }
+        }
+
         public CableDevice GetCableDeviceById(int id)
         {
             return new CableDevice(id, e3ObjectFabric);
         }
 
+        public Component GetComponentById(int id)
+        {
+            return new Component(id, e3ObjectFabric);
+        }
+
         public CableCore GetCableCoreById(int id)
         {
             return new CableCore(id, e3ObjectFabric);
-        }
-
-        public List<Signal> Signals
-        {
-            get
-            {
-                List<int> signalIds = SignalIds;
-                List<Signal> signals = new List<Signal>(signalIds.Count);
-                foreach (int signalId in signalIds)
-                    signals.Add(new Signal(signalId, e3ObjectFabric));
-                return signals;
-            }
         }
 
         public List<int> SignalIds
@@ -127,15 +136,16 @@ namespace KSPE3Lib
             }
         }
 
-        public List<Connection> Connections
+        public List<int> SelectedSignalIds
         {
             get
             {
-                List<int> connectionIds = ConnectionIds;
-                List<Connection> connections = new List<Connection>(connectionIds.Count);
-                foreach (int connectionId in connectionIds)
-                    connections.Add(new Connection(connectionId, e3ObjectFabric));
-                return connections;
+                dynamic selectedSignalIds = default(dynamic);
+                int selectedSignalCount = e3ObjectFabric.GetJob().GetSelectedSignalIds(ref selectedSignalIds);
+                List<int> ids = new List<int>(selectedSignalCount);
+                for (int i = 1; i <= selectedSignalCount; i++)    // e3 в [0] всегда возвращает null
+                    ids.Add(selectedSignalIds[i]);
+                return ids;
             }
         }
 
@@ -148,6 +158,36 @@ namespace KSPE3Lib
                 List<int> ids = new List<int>(connectionCount);
                 for (int i = 1; i <= connectionCount; i++)  // e3 в [0] всегда возвращает null
                     ids.Add(connectionIds[i]);
+                return ids;
+            }
+        }
+
+        public List<int> SelectedConnectionIds
+        {
+            get
+            {
+                dynamic selectedConnectionIds = default(dynamic);
+                int selectionConnectionCount = e3ObjectFabric.GetJob().GetSelectedConnectionIds(ref selectedConnectionIds);
+                List<int> ids = new List<int>(selectionConnectionCount);
+                for (int i = 1; i <= selectionConnectionCount; i++)  // e3 в [0] всегда возвращает null
+                    ids.Add(selectedConnectionIds[i]);
+                return ids;
+            }
+        }
+
+        public List<int> SelectedCableIds
+        {
+            get
+            {
+                dynamic selectedCableIds = default(dynamic);
+                int selectionCableCount = e3ObjectFabric.GetJob().GetSelectedCableIds(ref selectedCableIds);
+                List<int> ids = new List<int>();
+                for (int i = 1; i <= selectionCableCount; i++)  // e3 в [0] всегда возвращает null
+                    ids.Add(selectedCableIds[i]);
+                selectionCableCount = e3ObjectFabric.GetJob().GetTreeSelectedCableIds(ref selectedCableIds);
+                for (int i = 1; i <= selectionCableCount; i++)
+                    ids.Add(selectedCableIds[i]);
+                ids = ids.Distinct().ToList();
                 return ids;
             }
         }
@@ -220,9 +260,19 @@ namespace KSPE3Lib
             return new Connection(id, e3ObjectFabric);
         }
 
+        public Outline GetOutlineById(int id)
+        {
+            return new Outline(id, e3ObjectFabric);
+        }
+
         public int JumpToId(int id)
         {
             return e3ObjectFabric.GetJob().JumpToID(id);
+        }
+
+        public void PutInfo(string value)
+        {
+            e3ObjectFabric.GetApplication().PutInfo(0, value);
         }
 
         public void Release()

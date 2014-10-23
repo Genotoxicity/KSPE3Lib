@@ -7,6 +7,7 @@ namespace KSPE3Lib
     {
 
         CT.Dispatcher dispatcher = new CT.Dispatcher();
+        private e3Application app;
         private e3Job job;
         private int processId;
 
@@ -14,12 +15,13 @@ namespace KSPE3Lib
         {
             dispatcher = new CT.Dispatcher();
             processId = applicationProcessId;
-            job = GetApplication().CreateJobObject();
+            app = dispatcher.GetE3ByProcessId(processId) as e3Application;
+            job = app.CreateJobObject();
         }
 
-        private e3Application GetApplication()
+        internal e3Application GetApplication()
         {
-            return dispatcher.GetE3ByProcessId(processId) as e3Application;
+            return app;
         }
 
         internal e3Job GetJob()
@@ -97,6 +99,13 @@ namespace KSPE3Lib
             return net;
         }
 
+        internal e3Outline GetOutline(int id)
+        {
+            e3Outline outline = job.CreateOutlineObject();
+            outline.SetId(id);
+            return outline;
+        }
+
         internal e3Connection GetConnection(int id)
         {
             e3Connection connection = job.CreateConnectionObject();
@@ -106,6 +115,8 @@ namespace KSPE3Lib
 
         internal void Release()
         {
+            app.Quit();
+            Marshal.FinalReleaseComObject(app);
             Marshal.FinalReleaseComObject(job);
         }
     }

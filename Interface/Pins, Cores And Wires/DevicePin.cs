@@ -7,7 +7,6 @@ namespace KSPE3Lib
 {
     public class DevicePin : Pin
     {
-        private List<int> coreIds;
         private int sheetId;
         private Point position;
         private bool isLocationVariablesSet;
@@ -16,9 +15,36 @@ namespace KSPE3Lib
         {
             get
             {
-                if (coreIds == null)
-                    coreIds = GetCoreIds();
-                return coreIds;
+                dynamic connectedCoreIds = default(dynamic);
+                int coreCount = pin.GetCoreIds(ref connectedCoreIds);
+                List<int> ids = new List<int>(coreCount);
+                for (int i = 1; i <= coreCount; i++)
+                    ids.Add(connectedCoreIds[i]);
+                return ids;
+            }
+        }
+
+        public int SequenceNumber
+        {
+            get
+            {
+                return pin.GetSequenceNumber();
+            }
+        }
+
+        public int PhysicalId
+        {
+            get
+            {
+                return pin.GetPhysicalID();
+            }
+        }
+
+        public bool IsPlaced
+        {
+            get
+            {
+                return pin.HasDevice() == 1;
             }
         }
 
@@ -31,7 +57,6 @@ namespace KSPE3Lib
             set
             {
                 base.Id = value;
-                coreIds = null;
                 isLocationVariablesSet = false;
             }
         }
@@ -64,19 +89,28 @@ namespace KSPE3Lib
             }
         }
 
+        public int NameEquivalence
+        {
+            get
+            {
+                return pin.GetNameEquivalenceID();
+            }
+        }
+
+        public bool IsOnPanel
+        {
+            get
+            {
+                dynamic dx = default(dynamic);
+                dynamic dy = default(dynamic);
+                dynamic dz = default(dynamic);
+                return pin.GetPanelLocation(ref dx, ref dy, ref dz) > 0;
+            }
+        }
+
         internal DevicePin(int id, E3ObjectFabric e3ObjectFabric) : base(id, e3ObjectFabric)
         {
             isLocationVariablesSet = false;
-        }
-
-        private List<int> GetCoreIds()
-        {
-            dynamic connectedCoreIds = default(dynamic);
-            int coreCount = pin.GetCoreIds(ref connectedCoreIds);
-            List<int> ids = new List<int>(coreCount);
-            for (int i = 1; i <= coreCount; i++)
-                ids.Add(connectedCoreIds[i]);
-            return ids;
         }
 
         public bool IsView()
@@ -89,6 +123,18 @@ namespace KSPE3Lib
             return pin.IsPinView() == 1;
         }
 
+        public int GetPanelLocation(out double x, out double y, out double z)
+        {
+            dynamic dx = default(dynamic);
+            dynamic dy = default(dynamic);
+            dynamic dz = default(dynamic);
+            int result = pin.GetPanelLocation(ref dx, ref dy, ref dz);
+            x = (double)dx;
+            y = (double)dy;
+            z = (double)dz;
+            return result;
+        }
+
         private void SetLocationVariables()
         {
             isLocationVariablesSet = true;
@@ -96,11 +142,6 @@ namespace KSPE3Lib
             sheetId = pin.GetSchemaLocation(ref xCoordinate, ref yCoordinate, ref grid);
             if (xCoordinate != null && yCoordinate != null)
                 position = new Point(xCoordinate, yCoordinate);
-            else
-            {
-                e3Device device = e3ObjectFabric.GetDevice(Id);
-                MessageBox.Show(String.Format("Проверьте расположение {0}{1}:{2}. Не удается получить расположение вывода", device.GetAssignment(), device.GetName(), Name),"Ошибка!", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
         }
 
     }

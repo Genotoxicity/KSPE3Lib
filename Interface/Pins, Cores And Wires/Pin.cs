@@ -49,5 +49,10 @@ namespace KSPE3Lib
             this.e3ObjectFabric = e3ObjectFabric;
             pin = e3ObjectFabric.GetPin(id);
         }
+
+        public string GetAttributeValue(string attributeName)
+        {
+            return pin.GetAttributeValue(attributeName);
+        }
     }
 }

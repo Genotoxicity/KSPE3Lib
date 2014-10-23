@@ -1,4 +1,6 @@
-﻿namespace KSPE3Lib
+﻿using System.Collections.Generic;
+
+namespace KSPE3Lib
 {
     public class Core : Pin
     {
@@ -15,6 +17,14 @@
             get
             {
                 return pin.GetEndPinId(2);
+            }
+        }
+
+        public List<int> ConnectedPinIds
+        {
+            get
+            {
+                return new List<int>(2) { pin.GetEndPinId(1), pin.GetEndPinId(2) };
             }
         }
 

@@ -1,4 +1,5 @@
-﻿using e3;
+﻿using System.Collections.Generic;
+using e3;
 
 namespace KSPE3Lib
 {
@@ -15,6 +16,19 @@ namespace KSPE3Lib
             set
             {
                 graph.SetId(value);
+            }
+        }
+
+        public List<int> GraphicIds
+        {
+            get
+            {
+                dynamic graphicIds = default(dynamic);
+                int graphicCount = graph.GetGraphIds(ref graphicIds);
+                List<int> ids = new List<int>(graphicCount);
+                for (int i = 1; i <= graphicCount; i++)
+                    ids.Add(graphicIds[i]);
+                return ids;
             }
         }
 
@@ -84,15 +98,29 @@ namespace KSPE3Lib
             return Id;
         }
 
-        public void SetLineWidth(double width)
+        public double SetLineWidth(double width)
         {
-            graph.SetLineWidth(width);
+            return graph.SetLineWidth(width);
         }
 
-        public void SetColor(int colorIndex)
+        public double SetLineStyle(int lineStyle)
         {
-            graph.SetColour(colorIndex);
+            return graph.SetLineStyle(lineStyle);
         }
 
+        public int SetColor(int colorIndex)
+        {
+            return graph.SetColour(colorIndex);
+        }
+
+        public int Delete()
+        {
+            return graph.Delete();
+        }
+
+        public int CreateFromSymbol(int sheetId, double x, double y, string symbolName, string symbolVersion)
+        {
+            return graph.CreateFromSymbol(sheetId, x, y, null, 0, 0, symbolName, symbolVersion);
+        }
     }
 }
