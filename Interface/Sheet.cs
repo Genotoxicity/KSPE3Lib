@@ -257,10 +257,10 @@ namespace KSPE3Lib
 
         public int Create(string name, string format)
         {
-            return Create(name, format, 0, Position.After);
+            return Create(name, format, 0, InsertPosition.After);
         }
 
-        public int Create(string name, string format, int targetSheetId, Position position)
+        public int Create(string name, string format, int targetSheetId, InsertPosition position)
         {
             int newSheetId = objectFabric.GetSheet(0).Create(0, name, format, targetSheetId, (int)position);
             Id = newSheetId;

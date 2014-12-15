@@ -73,6 +73,7 @@
     <Compile Include="Interface\SymbolTransformation.cs" />
     <Compile Include="Interface\Signal.cs" />
     <Compile Include="Interface\Symbol.cs" />
+    <Compile Include="PinPanelLocation.cs" />
     <Compile Include="SelectedColorChangedEventArgs.cs" />
     <Compile Include="E3ColorTable.cs" />
     <Compile Include="FontSettingsWindow.cs" />
@@ -95,7 +96,7 @@
     <Compile Include="Interface\E3Project.cs" />
     <Compile Include="Interface\Pins, Cores And Wires\Pin.cs" />
     <Compile Include="Interface\Sheet.cs" />
-    <Compile Include="Interface\Position.cs" />
+    <Compile Include="Interface\InsertPosition.cs" />
     <Compile Include="Interface\E3Text.cs" />
     <Compile Include="LineTemplate.cs" />
     <Compile Include="ApplicationDispatcher\E3ApplicationInfo.cs" />

@@ -30,6 +30,14 @@ namespace KSPE3Lib
             }
         }
 
+        public int CarrierId
+        {
+            get
+            {
+                return device.GetCarrierId();
+            }
+        }
+
         public int TerminalBlockId
         {
             get

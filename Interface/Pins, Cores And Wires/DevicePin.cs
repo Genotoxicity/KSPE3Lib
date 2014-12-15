@@ -48,6 +48,19 @@ namespace KSPE3Lib
             }
         }
 
+        public PinPanelLocation PanelLocation
+        {
+            get
+            {
+
+                dynamic dx = default(dynamic);
+                dynamic dy = default(dynamic);
+                dynamic dz = default(dynamic);
+                int sheetId = pin.GetPanelLocation(ref dx, ref dy, ref dz);
+                return new PinPanelLocation(sheetId, (double)dx, (double)dy, (double)dz);
+            }
+        }
+
         public override int Id
         {
             get
@@ -123,17 +136,7 @@ namespace KSPE3Lib
             return pin.IsPinView() == 1;
         }
 
-        public int GetPanelLocation(out double x, out double y, out double z)
-        {
-            dynamic dx = default(dynamic);
-            dynamic dy = default(dynamic);
-            dynamic dz = default(dynamic);
-            int result = pin.GetPanelLocation(ref dx, ref dy, ref dz);
-            x = (double)dx;
-            y = (double)dy;
-            z = (double)dz;
-            return result;
-        }
+        
 
         private void SetLocationVariables()
         {

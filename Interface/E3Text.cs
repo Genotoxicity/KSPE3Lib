@@ -55,6 +55,8 @@ namespace KSPE3Lib
 
         public double GetTextLength(string value, E3Font font)
         {
+            if (String.IsNullOrEmpty(value))
+                return 0;
             dynamic xArray = default(dynamic);
             dynamic yArray = default(dynamic);
             text.CalculateBoxAt(0, value, 0, 0, 0, font.height, (int)font.mode, (int)font.style, font.name, 0, 0, ref xArray, ref yArray); // в качестве начальных координат для простоты устанавливаем 0, 0
@@ -63,6 +65,8 @@ namespace KSPE3Lib
 
         public Size GetTextBoxSize(string value, E3Font font, double rotation)
         {
+            if (String.IsNullOrEmpty(value))
+                return new Size(0, 0);
             dynamic xArray = default(dynamic);
             dynamic yArray = default(dynamic);
             text.CalculateBoxAt(0, value, 0, 0, rotation, font.height, (int)font.mode, (int)font.style, font.name, 0, 0, ref xArray, ref yArray); // в качестве начальных координат для простоты устанавливаем 0, 0
@@ -86,6 +90,12 @@ namespace KSPE3Lib
         {
             double textOffset = font.height - textWidth / 2;
             return sheet.MoveRight(textCenterX, textOffset);
+        }
+
+        public double GetTextOrdinate(double textCenterY, double textHeight, E3Font font, Sheet sheet)
+        {
+            double textOffset = font.height - textHeight / 2;
+            return sheet.MoveDown(textCenterY, textOffset);
         }
 
         public E3Font GetFont()

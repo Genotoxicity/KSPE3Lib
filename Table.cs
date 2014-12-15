@@ -92,7 +92,7 @@ namespace KSPE3Lib
                 sheetId = sheetIds[sheetIds.Count - 1];
             else
                 sheetId = 0;
-            return currentSheet.Create(sheetCount.ToString(), template.Format, sheetId, Position.After);
+            return currentSheet.Create(sheetCount.ToString(), template.Format, sheetId, InsertPosition.After);
         }
 
         private int CreateHeader(TablePageTemplate sheetTemplate)
