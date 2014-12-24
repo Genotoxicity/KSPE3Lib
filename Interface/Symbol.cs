@@ -75,6 +75,14 @@ namespace KSPE3Lib
             }
         }
 
+        public string SymbolTypeName
+        {
+            get
+            {
+                return symbol.GetSymbolTypeName();
+            }
+        }
+
         public List<int> PinIds
         {
             get
@@ -176,6 +184,11 @@ namespace KSPE3Lib
         public void SetAttribute(string attribute, string value)
         {
             symbol.SetAttributeValue(attribute, value);
+        }
+
+        public string GetAttribute(string attribute)
+        {
+            return symbol.GetAttributeValue(attribute);
         }
 
         private Area GetArea()
